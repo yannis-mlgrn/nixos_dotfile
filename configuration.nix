@@ -20,11 +20,31 @@
       <agenix/modules/age.nix>
     ];
 
+  # Legal banner for console and SSH
+  environment.etc."issue".text = ''
+    ***************************************************************************
+    *                                                                         *
+    *                      UNAUTHORIZED ACCESS PROHIBITED                     *
+    *                                                                         *
+    *  This system is for authorized users only. All activities are logged.   *
+    *  By continuing, you consent to monitoring. Unauthorized access will be  *
+    *  prosecuted to the full extent of the law.                              *
+    *                                                                         *
+    ***************************************************************************
+  '';
+  environment.etc."issue.net".text = config.environment.etc."issue".text;
+
   # Openssh config
   services.openssh = {
     enable = true;
-    settings.PasswordAuthentication = false;
-    settings.KbdInteractiveAuthentication = false;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      MaxAuthTries = 3;
+      AllowTcpForwarding = false;
+      AllowAgentForwarding = false;
+      LogLevel = "VERBOSE";
+    };
   };
 
   home-manager.useGlobalPkgs = true;
@@ -37,6 +57,7 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.firewall.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
