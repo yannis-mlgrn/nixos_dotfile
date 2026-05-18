@@ -30,10 +30,28 @@ Les modules sont automatiquement importés via `hardening/default.nix` dans la c
 
 ### Vérifier la sécurité d'un service
 ```bash
-systemctl --user analyze security nextcloud-autosync
+systemd-analyze --user security nextcloud-autosync.service
 ```
 
 ### Consulter les journaux d'audit
 ```bash
 sudo ausearch -m execve -ts recent
+```
+
+## 🧪 Conformité ANSSI
+
+Le système intègre un module de conformité automatisé basé sur les recommandations de l'ANSSI.
+
+### Tester la conformité en temps réel
+Un script de vérification est généré à chaque reconstruction du système. Il compare l'état actuel de la machine avec les règles activées.
+```bash
+sudo anssi-nixos-compliance-check
+```
+*Note : Certaines vérifications nécessitent les privilèges root pour accéder aux paramètres noyau (`sysctl`, `procfs`).*
+
+### Générer un rapport d'audit
+Un rapport détaillé au format JSON est produit lors du build. Il contient la liste des règles appliquées, les exceptions documentées et les références ANSSI.
+```bash
+# Pour localiser le rapport dans le store Nix
+ls $(nix-instantiate --eval -E '(import <nixpkgs> {}).nixos { configuration = import /etc/nixos/configuration.nix; }).config.system.build.complianceReportDocument' | xargs cat
 ```
