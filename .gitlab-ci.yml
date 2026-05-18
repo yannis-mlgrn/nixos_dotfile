@@ -1,0 +1,15 @@
+stages:
+  - check
+
+nix-check:
+  stage: check
+  image: nixos/nix:latest
+  script:
+    - nix-env -iA nixpkgs.statix nixpkgs.nix
+    - echo "Checking Nix syntax..."
+    - find . -name "*.nix" -exec nix-instantiate --parse {} > /dev/null \;
+    - echo "Running Statix linter..."
+    - statix check
+  only:
+    - main
+    - merge_requests

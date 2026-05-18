@@ -1,0 +1,20 @@
+# Nix/NixOS
+result
+result-*
+.nix-node
+.direnv/
+.envrc
+
+# Secrets (Backup & Temp)
+*.age.bak
+*.age.tmp
+secret_out.txt
+/tmp/
+
+# SSH (Just in case)
+.ssh/
+
+# System
+.DS_Store
+*.swp
+*~
