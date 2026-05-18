@@ -13,6 +13,27 @@
       Service = {
         EnvironmentFile = config.age.secrets.nextcloud-drive-credentials.path;
 
+        # --- Hardening Xe Iaso / ANSSI ---
+        # Le service tourne déjà en tant qu'utilisateur (user-service), 
+        # mais on renforce son isolation.
+        
+        CapabilityBoundingSet = "";
+        NoNewPrivileges = true;
+        ProtectSystem = "strict";
+        ProtectHome = "read-only"; # Besoin de ~/drive
+        ReadWritePaths = [ "/home/yannis/drive" ];
+        PrivateTmp = true;
+        PrivateDevices = true;
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectControlGroups = true;
+        RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
+        RestrictNamespaces = true;
+        LockPersonality = true;
+        SystemCallFilter = [ "@system-service" "~@privileged" "~@resources" ];
+        SystemCallArchitectures = "native";
+        # ---------------------------------
+
         ExecStart = "${pkgs.writeShellScript "nextcloud-sync-wrapper" ''
           ${pkgs.nextcloud-client}/bin/nextcloudcmd -n -u "$username" -p "$password" /home/yannis/drive/ https://drive.resel.fr
         ''}";

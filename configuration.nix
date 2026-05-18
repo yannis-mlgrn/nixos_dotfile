@@ -13,7 +13,7 @@
       # Import customs files
       ./users/yannis/default.nix
       ./utils/nextcloud-sync.nix
-      
+      ./hardening/default.nix
 
       #Import Modules
       <home-manager/nixos>
