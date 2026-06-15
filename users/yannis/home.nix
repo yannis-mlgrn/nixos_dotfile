@@ -6,10 +6,11 @@
   # Configuration de Git
   programs.git = {
       enable = true;
-      userName = "Yannis";
-      userEmail = "yannismalgorn@gmail.com";
-      
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Yannis";
+          email = "yannismalgorn@gmail.com";
+        };
         init.defaultBranch = "main";
         pull.rebase = true;
       };
@@ -23,11 +24,36 @@
     vscodium
     firefox
     bitwarden-desktop
+    telegram-desktop
     antigravity
     gemini-cli
+    tailscale
+    discord
+    obsidian
+
+    # Rust7
+    rustup
+    gcc
+    cmake
+    gnumake
 
     # For the intership
     android-studio
+    android-tools
+    frida-tools
+    burpsuite
+    uv
+    lzip
+    ghidra   
+    jadx
+    quark
+    apksigner
+    apktool
+    (builtins.getFlake "github:jacopone/antigravity-nix").packages.${pkgs.system}.google-antigravity-cli
   ];
+
+  home.shellAliases = {
+    agi = "agy";
+  };
 
 }

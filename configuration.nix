@@ -11,12 +11,13 @@
       ./hardware-configuration.nix
 
       # Import customs files
-      ./users/yannis/default.nix
+      ./users/yannis
+      ./utils/android-reverse.nix
       ./utils/nextcloud-sync.nix
-      ./hardening/default.nix
+      #./hardening/default.nix
 
       #Import Modules
-      <home-manager/nixos>
+      <home-manager/nixos>  
       <agenix/modules/age.nix>
     ];
 
@@ -111,6 +112,9 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  # Enable Tailscale
+  services.tailscale.enable = true;
+
   # Enable graphics driver
   hardware.graphics.enable = true;
 
@@ -153,6 +157,11 @@
 
   # Accept experimental features
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  environment.systemPackages = with pkgs; [
+    wget
+    vim
+  ];
   
   system.stateVersion = "25.11";
 
@@ -161,5 +170,11 @@
     owner = "yannis";
     mode = "600";
   };
+
+  ## UV Compliance ##
+  programs.nix-ld.enable = true;
+	
+  networking.firewall.allowedTCPPorts = [ 8080 ];
+
 
 }
