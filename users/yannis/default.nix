@@ -4,7 +4,7 @@
   users.users.yannis = {
     isNormalUser = true;
     description = "Yannis";
-    extraGroups = [ "networkmanager" "wheel" "waydroid" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "video" "input"];
     group = "yannis";
     shell = pkgs.zsh;
   };

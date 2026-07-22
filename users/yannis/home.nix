@@ -1,20 +1,20 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }: # 1. On injecte 'inputs' ici
 
 {
   home.stateVersion = "25.11";
 
   # Configuration de Git
   programs.git = {
-      enable = true;
-      settings = {
-        user = {
-          name = "Yannis";
-          email = "yannismalgorn@gmail.com";
-        };
-        init.defaultBranch = "main";
-        pull.rebase = true;
+    enable = true;
+    settings = {
+      user = {
+        name = "Yannis";
+        email = "yannismalgorn@gmail.com";
       };
+      init.defaultBranch = "main";
+      pull.rebase = true;
     };
+  };
 
   home.packages = with pkgs; [
     git-credential-oauth
@@ -23,37 +23,41 @@
     # Desktop
     vscodium
     firefox
-    bitwarden-desktop
+    # bitwarden-desktop # Risk issue with electron  39.X
     telegram-desktop
     antigravity
     gemini-cli
     tailscale
     discord
     obsidian
+    openssl
+    unzip
+    pkg-config
+    zed-editor
 
-    # Rust7
+    # Rust
     rustup
     gcc
     cmake
     gnumake
 
-    # For the intership
-    android-studio
-    android-tools
+    # Docker
+    docker-compose
+
+    # Internship
     frida-tools
     burpsuite
     uv
     lzip
-    ghidra   
+    ghidra
+    ripgrep
     jadx
-    quark
-    apksigner
-    apktool
-    (builtins.getFlake "github:jacopone/antigravity-nix").packages.${pkgs.system}.google-antigravity-cli
+
+    # 2. Utilisation propre de l'input Flake
+    inputs.antigravity-nix.packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-cli
   ];
 
   home.shellAliases = {
     agi = "agy";
   };
-
 }

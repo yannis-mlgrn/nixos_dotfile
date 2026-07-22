@@ -1,5 +1,5 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
+# your system. Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
@@ -12,23 +12,18 @@
 
       # Import customs files
       ./users/yannis
-      ./utils/android-reverse.nix
       ./utils/nextcloud-sync.nix
       #./hardening/default.nix
-
-      #Import Modules
-      <home-manager/nixos>  
-      <agenix/modules/age.nix>
     ];
 
   # Legal banner for console and SSH
   environment.etc."issue".text = ''
     ***************************************************************************
     *                                                                         *
-    *                      UNAUTHORIZED ACCESS PROHIBITED                     *
+    *                        UNAUTHORIZED ACCESS PROHIBITED                   *
     *                                                                         *
     *  This system is for authorized users only. All activities are logged.   *
-    *  By continuing, you consent to monitoring. Unauthorized access will be  *
+    *  By continuing, you consent to monitoring. Unauthorized access will be *
     *  prosecuted to the full extent of the law.                              *
     *                                                                         *
     ***************************************************************************
@@ -50,10 +45,11 @@
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  
-  # Bootloader.
+
+  # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
   networking.hostName = "dellYannis";
 
   # Enable networking
@@ -81,9 +77,24 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  # Désactiver GDM et GNOME
+  services.xserver.displayManager.gdm.enable = false;
+  services.desktopManager.gnome.enable = false;
+
+  # Activer SDDM avec Qt6 / Wayland
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+    package = pkgs.kdePackages.sddm;
+  };
+
+  # Session Wayland par défaut
+  services.displayManager.defaultSession = "hyprland";
+
+  programs.qylock = {
+    enable = true;
+    theme = "windows_7";
+  };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -99,13 +110,20 @@
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
+  security.pam.services.hyprlock = {};
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    jack.enable = true;
   };
+
+  # Enable Bluetooth and Blueman
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -118,27 +136,20 @@
   # Enable graphics driver
   hardware.graphics.enable = true;
 
+  services.udev.extraRules = ''
+    KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", KERNELS=="0000:05:00.0", SYMLINK+="dri/amd-igpu"
+    KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", KERNELS=="0000:01:00.0", SYMLINK+="dri/nvidia-dgpu"
+  '';
+
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia = {
-    # Modesetting is required.
     modesetting.enable = true;
-
-    # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
     powerManagement.enable = false;
-    # Fine-grained power management. Turns off GPU when not in use.
     powerManagement.finegrained = false;
-
-    # Use the NVidia open source kernel module (not to be confused with the
-    # nvidia-x11 open source drivers).
     open = false;
-
-    # Enable the Nvidia settings menu,
-    # accessible via `nvidia-settings`.
     nvidiaSettings = true;
-
-    # Optionally, you may need to select the appropriate driver version for your specific GPU.
     package = config.boot.kernelPackages.nvidiaPackages.stable;
 
     prime = {
@@ -146,7 +157,6 @@
         enable = true;
         enableOffloadCmd = true;
       };
-      # lspci | grep -E "VGA|3D"
       nvidiaBusId = "PCI:1:0:0";
       amdgpuBusId = "PCI:5:0:0";
     };
@@ -161,8 +171,28 @@
   environment.systemPackages = with pkgs; [
     wget
     vim
+
+    # Hyprland tools & Desktop apps
+    waybar
+    eww
+    dunst
+    libnotify
+    bemenu
+    htop
+    kdePackages.dolphin
+    brightnessctl
+    hyprpaper
+    hyprlock
+
+    (waybar.overrideAttrs (oldAttrs: {
+      mesonFlags = (oldAttrs.mesonFlags or []) ++ [ "-Dexperimental=true" ];
+    }))
   ];
-  
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+  ];
+
   system.stateVersion = "25.11";
 
   age.secrets.nextcloud-drive-credentials = {
@@ -173,8 +203,48 @@
 
   ## UV Compliance ##
   programs.nix-ld.enable = true;
-	
+
+  ## Docker compliance
+  virtualisation.docker = {
+    enable = true;
+  };
+
+  # Mitmweb compliance
   networking.firewall.allowedTCPPorts = [ 8080 ];
 
+  # Hyprland (sans UWSM)
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    withUWSM = false;
+  };
 
+  # Environment variables for Wayland + Nvidia + Hyprland
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+
+    # Nvidia
+    LIBVA_DRIVER_NAME = "nvidia";
+    XDG_SESSION_TYPE = "wayland";
+    GBM_BACKEND = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    WLR_NO_HARDWARE_CURSORS = "1";
+
+    # App configs
+    BEMENU_BACKEND = "wayland";
+    ZED_RENDERER = "opengl";
+  };
+
+  # Desktop portals
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-hyprland
+    ];
+  };
+
+  # Autoriser la modification de la luminosité sans sudo
+  services.udev.packages = [ pkgs.brightnessctl ];
 }

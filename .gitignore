@@ -18,3 +18,4 @@ secret_out.txt
 .DS_Store
 *.swp
 *~
+.antigravitycli/
