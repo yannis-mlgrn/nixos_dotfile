@@ -55,7 +55,13 @@ nix-shell
 
 ### Appliquer les changements
 ```bash
+(deprecated, il faut utiliser le flakes)
 sudo nixos-rebuild switch -I nixos-config=/home/yannis/nixos-config/configuration.nix
+
+ou 
+
+cd ~/nixos-config
+sudo nixos-rebuild switch --flake .
 ```
 
 ### Gestion des secrets
