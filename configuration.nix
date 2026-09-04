@@ -12,7 +12,7 @@
 
       # Import customs files
       ./users/yannis
-      ./utils/nextcloud-sync.nix
+      #./utils/nextcloud-sync.nix
       #./hardening/default.nix
     ];
 
@@ -52,9 +52,15 @@
 
   networking.hostName = "dellYannis";
 
-  # Enable networking
+  # Enable networking (NetworkManager handles Ethernet & Wi-Fi)
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
+
+  # Optionally set static IP for enp3s0 if switch doesn't have a DHCP server:
+  # networking.interfaces.enp3s0.ipv4.addresses = [{
+  #   address = "192.168.1.50";
+  #   prefixLength = 24;
+  # }];
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
@@ -133,6 +139,9 @@
   # Enable Tailscale
   services.tailscale.enable = true;
 
+  # Enable gnugpg
+  programs.gnupg.agent.enable = true;
+
   # Enable graphics driver
   hardware.graphics.enable = true;
 
@@ -183,10 +192,19 @@
     brightnessctl
     hyprpaper
     hyprlock
+    networkmanagerapplet
 
     (waybar.overrideAttrs (oldAttrs: {
       mesonFlags = (oldAttrs.mesonFlags or []) ++ [ "-Dexperimental=true" ];
     }))
+
+    # Vagrant
+    vagrant
+
+   # Avoid C compilation errors
+   openssl
+   openssl.dev
+   pkg-config
   ];
 
   fonts.packages = with pkgs; [
@@ -195,11 +213,11 @@
 
   system.stateVersion = "25.11";
 
-  age.secrets.nextcloud-drive-credentials = {
-    file = ./secrets/nextcloud-sync-drive.age;
-    owner = "yannis";
-    mode = "600";
-  };
+  # age.secrets.nextcloud-drive-credentials = {
+  #   file = ./secrets/nextcloud-sync-drive.age;
+  #   owner = "yannis";
+  #   mode = "600";
+  # };
 
   ## UV Compliance ##
   programs.nix-ld.enable = true;
@@ -208,6 +226,10 @@
   virtualisation.docker = {
     enable = true;
   };
+
+  # Libvirt & Vagrant configuration
+  virtualisation.libvirtd.enable = true;
+  programs.dconf.enable = true;
 
   # Mitmweb compliance
   networking.firewall.allowedTCPPorts = [ 8080 ];
@@ -224,16 +246,19 @@
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1";
 
-    # Nvidia
-    LIBVA_DRIVER_NAME = "nvidia";
+    # Nvidia (Commented out to run the desktop environment on the AMD iGPU, saving resources)
+    # LIBVA_DRIVER_NAME = "nvidia";
     XDG_SESSION_TYPE = "wayland";
-    GBM_BACKEND = "nvidia-drm";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    # GBM_BACKEND = "nvidia-drm";
+    # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     WLR_NO_HARDWARE_CURSORS = "1";
 
     # App configs
     BEMENU_BACKEND = "wayland";
     ZED_RENDERER = "opengl";
+
+    # Openssl
+    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig"; 
   };
 
   # Desktop portals

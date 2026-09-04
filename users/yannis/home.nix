@@ -3,9 +3,15 @@
 {
   home.stateVersion = "25.11";
 
-  # Configuration de Git
-  programs.git = {
+# Configuration de Git
+programs.git = {
     enable = true;
+
+    signing = {
+      key = "AE83A6FDBDBCD071";
+      signByDefault = true;
+    };
+
     settings = {
       user = {
         name = "Yannis";
@@ -19,10 +25,17 @@
   home.packages = with pkgs; [
     git-credential-oauth
     terminator
+    impala
+    bluetui
+
+    # IMT A
+    temurin-bin
 
     # Desktop
     vscodium
     firefox
+    thunderbird
+    spotify
     # bitwarden-desktop # Risk issue with electron  39.X
     telegram-desktop
     antigravity
@@ -52,6 +65,10 @@
     ghidra
     ripgrep
     jadx
+    android-tools
+
+    #Python 
+    pipx
 
     # 2. Utilisation propre de l'input Flake
     inputs.antigravity-nix.packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-cli
@@ -60,4 +77,8 @@
   home.shellAliases = {
     agi = "agy";
   };
+
+  home.sessionPath = [
+    "$HOME/.local/bin"
+  ];
 }
