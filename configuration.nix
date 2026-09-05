@@ -199,11 +199,6 @@
 
     # Vagrant
     vagrant
-
-   # Avoid C compilation errors
-   openssl
-   openssl.dev
-   pkg-config
   ];
 
   fonts.packages = with pkgs; [
@@ -218,8 +213,15 @@
   #   mode = "600";
   # };
 
-  ## UV Compliance ##
-  programs.nix-ld.enable = true;
+  ## UV & Dynamic Binaries (nix-ld) ##
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+      openssl
+    ];
+  };
 
   ## Docker compliance
   virtualisation.docker = {
@@ -255,9 +257,6 @@
     # App configs
     BEMENU_BACKEND = "wayland";
     ZED_RENDERER = "opengl";
-
-    # Openssl
-    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig"; 
   };
 
   # Desktop portals
