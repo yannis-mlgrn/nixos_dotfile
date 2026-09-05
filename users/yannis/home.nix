@@ -38,7 +38,7 @@ programs.git = {
     spotify
     # bitwarden-desktop # Risk issue with electron  39.X
     telegram-desktop
-    antigravity
+    antigravity-ide
     gemini-cli
     tailscale
     discord

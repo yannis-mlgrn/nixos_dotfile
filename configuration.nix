@@ -186,7 +186,6 @@
     vim
 
     # Hyprland tools & Desktop apps
-    waybar
     eww
     dunst
     libnotify
