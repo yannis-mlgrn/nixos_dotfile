@@ -4,13 +4,9 @@ stages:
 nix-check:
   stage: check
   image: nixos/nix:latest
-  variables:
-    NIX_CONFIG: "extra-experimental-features = nix-command flakes"
   script:
-    - echo "Checking Nix syntax & Flake evaluation..."
-    - nix flake check
-    - echo "Running Statix linter..."
-    - nix run nixpkgs#statix -- check
+    - nix --extra-experimental-features "nix-command flakes" flake check
+    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#statix -- check
   only:
     - main
     - merge_requests
