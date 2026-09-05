@@ -14,6 +14,7 @@
 
     # App configs
     BEMENU_BACKEND = "wayland";
+    BEMENU_OPTS = "--no-overlap -W 1 -H 26 --hp 6 -i --wrap --fn 'JetBrainsMono Nerd Font 11' --tb '#101018' --tf '#8caaee' --fb '#101018' --ff '#c6d0f5' --nb '#101018' --nf '#c6d0f5' --hb '#313244' --hf '#99d1db' --sb '#313244' --sf '#99d1db' --scb '#101018' --scf '#8caaee' --bdr '#313244' -B 1 -p ' 󰀻 Run: '";
     ZED_RENDERER = "opengl";
   };
 
