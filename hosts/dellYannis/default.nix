@@ -26,6 +26,7 @@
 
     # Utilitaires & Services
     ../../utils/gitlab-sync.nix
+    ../../utils/nextcloud-sync.nix
   ];
 
   networking.hostName = "dellYannis";

@@ -44,7 +44,8 @@ nixos-config/
 │   ├── secrets.nix                           # Registre des clés publiques autorisées
 │   └── *.age                                 # Secrets chiffrés via age / agenix
 └── utils/
-    └── nextcloud-sync.nix                    # Service de synchronisation Nextcloud durci (systemd)
+    ├── gitlab-sync.nix                       # Service et script CLI sync-gitlab-repos
+    └── nextcloud-sync.nix                    # Service et script CLI sync-nextcloud (~/drive)
 ```
 
 ---
