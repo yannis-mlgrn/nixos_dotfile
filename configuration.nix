@@ -87,10 +87,6 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Désactiver GDM et GNOME
-  services.xserver.displayManager.gdm.enable = false;
-  services.desktopManager.gnome.enable = false;
-
   # Activer SDDM avec Qt6 / Wayland
   services.displayManager.sddm = {
     enable = true;

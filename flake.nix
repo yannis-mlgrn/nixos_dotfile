@@ -20,7 +20,6 @@
 
   outputs = { self, nixpkgs, home-manager, agenix, qylock, antigravity-nix, ... }@inputs: {
     nixosConfigurations.dellYannis = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
 
       # Transmet inputs aux modules NixOS
       specialArgs = { inherit inputs; };
