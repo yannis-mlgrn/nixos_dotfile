@@ -1,0 +1,11 @@
+# Configuration pour le linter Statix
+# La règle repeated_keys (W20) est désactivée car les déclarations par préfixe
+# (ex: boot.*, services.*, networking.*) sont idiomatiques dans NixOS et Home Manager,
+# et sont générées automatiquement dans hardware-configuration.nix.
+disabled = ["repeated_keys"]
+
+# Fichiers à ignorer par le linter
+ignore = [
+  ".direnv",
+  "hardware-configuration.nix"
+]
