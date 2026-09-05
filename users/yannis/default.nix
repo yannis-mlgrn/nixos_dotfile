@@ -1,10 +1,8 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   users.users.yannis = {
     isNormalUser = true;
     description = "Yannis";
-    extraGroups = [ "networkmanager" "wheel" "docker" "video" "input" "libvirtd" ];
+    extraGroups = ["networkmanager" "wheel" "docker" "video" "input" "libvirtd"];
     group = "yannis";
     shell = pkgs.zsh;
   };
@@ -20,17 +18,17 @@
     zsh-autoenv.enable = true;
     syntaxHighlighting.enable = true;
     ohMyZsh = {
-       enable = true;
-       theme = "robbyrussell";
-       plugins = [
-         "git"
-         "npm"
-         "history"
-         "node"
-         "rust"
-         "deno"
-         "z"
-       ];
+      enable = true;
+      theme = "robbyrussell";
+      plugins = [
+        "git"
+        "npm"
+        "history"
+        "node"
+        "rust"
+        "deno"
+        "z"
+      ];
     };
   };
 }

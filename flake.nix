@@ -12,17 +12,34 @@
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
 
-    qylock.url = "github:Darkkal44/qylock";
-    antigravity-nix.url = "github:jacopone/antigravity-nix";
+    qylock = {
+      url = "github:Darkkal44/qylock";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, agenix, qylock, antigravity-nix, ... }@inputs: {
-    nixosConfigurations.dellYannis = nixpkgs.lib.nixosSystem {
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    agenix,
+    qylock,
+    antigravity-nix,
+    ...
+  } @ inputs: {
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
 
+    nixosConfigurations.dellYannis = nixpkgs.lib.nixosSystem {
       # Transmet inputs aux modules NixOS
-      specialArgs = { inherit inputs; };
+      specialArgs = {inherit inputs;};
 
       modules = [
         qylock.nixosModules.default
@@ -30,22 +47,23 @@
         agenix.nixosModules.default
 
         {
-          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.extraSpecialArgs = {inherit inputs;};
         }
 
-        ./configuration.nix
+        ./hosts/dellYannis
       ];
     };
 
     devShells.x86_64-linux.default = let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    in pkgs.mkShell {
-      nativeBuildInputs = with pkgs; [
-        pkg-config
-      ];
-      buildInputs = with pkgs; [
-        openssl
-      ];
-    };
+    in
+      pkgs.mkShell {
+        nativeBuildInputs = with pkgs; [
+          pkg-config
+        ];
+        buildInputs = with pkgs; [
+          openssl
+        ];
+      };
   };
 }

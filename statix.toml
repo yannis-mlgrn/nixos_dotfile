@@ -7,5 +7,6 @@ disabled = ["repeated_keys"]
 # Fichiers à ignorer par le linter
 ignore = [
   ".direnv",
+  "**/hardware-configuration.nix",
   "hardware-configuration.nix"
 ]

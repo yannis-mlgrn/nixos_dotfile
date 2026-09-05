@@ -1,10 +1,14 @@
-{ pkgs, inputs, ... }: # 1. On injecte 'inputs' ici
-
+{
+  pkgs,
+  inputs,
+  ...
+}:
+# 1. On injecte 'inputs' ici
 {
   home.stateVersion = "25.11";
 
-# Configuration de Git
-programs.git = {
+  # Configuration de Git
+  programs.git = {
     enable = true;
 
     signing = {
@@ -66,7 +70,7 @@ programs.git = {
     jadx
     android-tools
 
-    #Python 
+    #Python
     pipx
 
     # 2. Utilisation propre de l'input Flake
