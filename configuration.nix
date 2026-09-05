@@ -50,6 +50,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Auto-load Intel Wi-Fi driver and non-free firmware
+  boot.kernelModules = [ "iwlwifi" ];
+  hardware.enableRedistributableFirmware = true;
+
   networking.hostName = "dellYannis";
 
   # Enable networking (NetworkManager handles Ethernet & Wi-Fi)
