@@ -75,11 +75,11 @@
     jadx
     android-tools
 
-    #Python
-    pipx
-
     # 2. Utilisation propre de l'input Flake
     inputs.antigravity-nix.packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-cli
+
+    # Raktools
+    inputs.raktools.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   home.sessionVariables = {

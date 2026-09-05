@@ -24,6 +24,11 @@
       url = "github:jacopone/antigravity-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    raktools = {
+      url = "git+https://git.resel.fr/ymalgorn1/projects/raktools.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
