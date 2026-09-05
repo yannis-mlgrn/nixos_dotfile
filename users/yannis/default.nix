@@ -30,5 +30,12 @@
         "z"
       ];
     };
+    interactiveShellInit = ''
+      if [ -f /run/agenix/gitlab-token ]; then
+        set -a
+        source /run/agenix/gitlab-token
+        set +a
+      fi
+    '';
   };
 }

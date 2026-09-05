@@ -23,6 +23,9 @@
     # Modules virtualisation
     ../../modules/virtualisation/docker.nix
     ../../modules/virtualisation/libvirt.nix
+
+    # Utilitaires & Services
+    ../../utils/gitlab-sync.nix
   ];
 
   networking.hostName = "dellYannis";
@@ -30,6 +33,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    backupFileExtension = "backup";
   };
 
   # Paquets système de base

@@ -9,4 +9,5 @@ let
   allKeys = [yannis system];
 in {
   "nextcloud-sync-drive.age".publicKeys = allKeys;
+  "gitlab-token.age".publicKeys = allKeys;
 }
