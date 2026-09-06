@@ -2,7 +2,7 @@
   users.users.yannis = {
     isNormalUser = true;
     description = "Yannis";
-    extraGroups = ["networkmanager" "wheel" "docker" "video" "input" "libvirtd"];
+    extraGroups = ["networkmanager" "wheel" "docker" "video" "input" "libvirtd" "dialout"];
     group = "yannis";
     shell = pkgs.zsh;
   };

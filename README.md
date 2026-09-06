@@ -38,8 +38,9 @@ nixos-config/
 │       └── libvirt.nix                       # Libvirt, Vagrant et dconf
 ├── users/
 │   └── yannis/
-│       ├── default.nix                       # Déclaration de l'utilisateur NixOS et shell Zsh
-│       └── home.nix                          # Configuration Home Manager (dotfiles, applications, git)
+│       ├── default.nix                       # Déclaration de l'utilisateur NixOS, groupes (dialout) et shell Zsh
+│       ├── home.nix                          # Point d'entrée Home Manager modulaire (assemblage des features)
+│       └── features/                         # Modules atomiques par domaine (cli, desktop, dev, git, resel, internship)
 ├── secrets/
 │   ├── secrets.nix                           # Registre des clés publiques autorisées
 │   └── *.age                                 # Secrets chiffrés via age / agenix
