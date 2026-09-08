@@ -5,7 +5,6 @@
 }: {
   home.packages = with pkgs; [
     terminator
-    impala
     bluetui
     ripgrep
     unzip

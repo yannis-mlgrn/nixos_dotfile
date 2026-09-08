@@ -32,6 +32,7 @@ nixos-config/
 │   ├── hardware/
 │   │   ├── bluetooth.nix                     # Bluetooth et service Blueman
 │   │   ├── nvidia.nix                        # Pilotes Nvidia, PRIME offload et règles udev DRI
+│   │   ├── power.nix                         # Profils énergétiques (power-profiles-daemon) et UPower
 │   │   └── sound.nix                         # PipeWire (ALSA, PulseAudio, JACK) et rtkit
 │   └── virtualisation/
 │       ├── docker.nix                        # Démon et virtualisation Docker
