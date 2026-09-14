@@ -29,6 +29,11 @@
       url = "git+https://git.resel.fr/ymalgorn1/projects/raktools.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    gazelle = {
+      url = "github:Zeus-Deus/gazelle-tui";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {

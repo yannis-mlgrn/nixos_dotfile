@@ -1,8 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    # IMT Atlantique
-    temurin-bin
-
     # Applications Desktop
     vscodium
     firefox

@@ -6,6 +6,7 @@
   home.packages = [
     pkgs.tio
     inputs.raktools.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgs.vagrant
   ];
 
   xdg.configFile."tio/config".text = ''

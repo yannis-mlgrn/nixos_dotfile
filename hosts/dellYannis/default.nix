@@ -28,6 +28,7 @@
     # Modules virtualisation
     ../../modules/virtualisation/docker.nix
     ../../modules/virtualisation/libvirt.nix
+    ../../modules/virtualisation/virtualbox.nix
 
     # Utilitaires & Services
     ../../utils/gitlab-sync.nix
