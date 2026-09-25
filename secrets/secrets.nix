@@ -10,5 +10,4 @@ let
 in {
   "nextcloud-sync-drive.age".publicKeys = allKeys;
   "gitlab-token.age".publicKeys = allKeys;
-  "gemini-api-key.age".publicKeys = allKeys;
 }

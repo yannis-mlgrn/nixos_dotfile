@@ -43,14 +43,6 @@
     backupFileExtension = "backup";
   };
 
-  # Déclaration du secret agenix pour Gemini
-  age.secrets.gemini-api-key = {
-    file = ../../secrets/gemini-api-key.age;
-    owner = "yannis";
-    group = "yannis";
-    mode = "0400";
-  };
-
   # Paquets système de base
   environment.systemPackages = with pkgs; [
     wget
