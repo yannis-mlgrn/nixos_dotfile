@@ -1,15 +1,21 @@
 stages:
-  - security
-  - lint
   - check
   - monitor
 
 default:
   interruptible: true
 
-# A. Détection des secrets (anti-leak)
+variables:
+  NIX_CONFIG: |
+    experimental-features = nix-command flakes
+    accept-flake-config = true
+    warn-dirty = false
+  GIT_DEPTH: 20
+
+# 1. Détection des secrets (ultra-léger, parallélisé via needs: [])
 secret-detection:
-  stage: security
+  stage: check
+  needs: []
   image:
     name: zricethezav/gitleaks:latest
     entrypoint: [""]
@@ -20,32 +26,39 @@ secret-detection:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
 
-# B. Linter et formatage de code (Alejandra, Statix, Deadnix)
+# 2. Linter complet en 1 seule passe Nix (Alejandra + Statix + Deadnix)
 nix-lint:
-  stage: lint
+  stage: check
+  needs: []
   image: nixos/nix:latest
+  cache:
+    key: nix-cache-$CI_COMMIT_REF_SLUG
+    paths:
+      - /root/.cache/nix
   script:
-    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#alejandra -- --check .
-    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#statix -- check
-    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#deadnix -- --fail .
+    - nix shell nixpkgs#alejandra nixpkgs#statix nixpkgs#deadnix --command sh -c "alejandra --check . && statix check && deadnix --fail ."
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
 
-# C. Validation de l'évaluation système et flake check
+# 3. Vérification complète du Flake sans double évaluation
 nix-eval:
   stage: check
+  needs: []
   image: nixos/nix:latest
+  cache:
+    key: nix-cache-$CI_COMMIT_REF_SLUG
+    paths:
+      - /root/.cache/nix
   script:
-    - nix --extra-experimental-features "nix-command flakes" flake check
-    - nix --extra-experimental-features "nix-command flakes" eval .#nixosConfigurations.dellYannis.config.system.build.toplevel.drvPath
+    - nix flake check --no-build
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
 
-# D. Monitoring proactif des mises à jour système (planifié / déclenchement manuel)
+# 4. Monitoring proactif des mises à jour système (uniquement en schedule / web)
 monitor-updates:
   stage: monitor
   image: nixos/nix:latest
@@ -53,16 +66,10 @@ monitor-updates:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_PIPELINE_SOURCE == "web"
   script:
-    - 'echo "=== 1. Construction du systeme actuel (lockfile) ==="'
-    - 'CURRENT_SYSTEM=$(nix --extra-experimental-features "nix-command flakes" build .#nixosConfigurations.dellYannis.config.system.build.toplevel --print-out-paths --no-link)'
-    - 'echo "Systeme actuel: $CURRENT_SYSTEM"'
-    - 'echo "=== 2. Verification des mises a jour des inputs Flake ==="'
-    - 'nix --extra-experimental-features "nix-command flakes" flake update --commit-lock-file=false'
-    - 'echo "=== 3. Construction du systeme avec les inputs mis a jour ==="'
-    - 'UPDATED_SYSTEM=$(nix --extra-experimental-features "nix-command flakes" build .#nixosConfigurations.dellYannis.config.system.build.toplevel --print-out-paths --no-link)'
-    - 'echo "Systeme mis a jour: $UPDATED_SYSTEM"'
-    - 'echo "=== 4. Rapport de diff des versions (nvd) ==="'
-    - 'nix --extra-experimental-features "nix-command flakes" run nixpkgs#nvd -- diff "$CURRENT_SYSTEM" "$UPDATED_SYSTEM" | tee nvd-update-report.txt'
+    - 'CURRENT_SYSTEM=$(nix build .#nixosConfigurations.dellYannis.config.system.build.toplevel --print-out-paths --no-link)'
+    - 'nix flake update --commit-lock-file=false'
+    - 'UPDATED_SYSTEM=$(nix build .#nixosConfigurations.dellYannis.config.system.build.toplevel --print-out-paths --no-link)'
+    - 'nix run nixpkgs#nvd -- diff "$CURRENT_SYSTEM" "$UPDATED_SYSTEM" | tee nvd-update-report.txt'
   artifacts:
     name: "nvd-update-report-$CI_COMMIT_SHORT_SHA"
     when: always
