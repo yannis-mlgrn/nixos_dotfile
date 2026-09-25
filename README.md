@@ -55,19 +55,19 @@ nixos-config/
 
 ## 🛠️ Commandes Usuelles
 
-### 1. Appliquer les changements (Rebuild)
+### 1. Appliquer les changements (Rebuild avec nh & nvd)
 
-Pour reconstruire et basculer sur la nouvelle configuration système :
-
-```bash
-sudo nixos-rebuild switch --flake .
-```
-
-Pour tester sans basculer le bootloader par défaut :
+Grâce à **`nh`** (Nix Helper) configuré avec le flake par défaut et **`nvd`** intégré :
 
 ```bash
-sudo nixos-rebuild test --flake .
+# Rebuild et affichage visuel du diff des paquets avant bascule
+nh os switch
+
+# Tester temporairement sans impacter le bootloader
+nh os test
 ```
+
+*(La commande classique reste `sudo nixos-rebuild switch --flake .`)*
 
 ### 2. Vérification et Qualité de Code
 

@@ -1,4 +1,4 @@
-_: {
+{pkgs, ...}: {
   nix = {
     settings = {
       experimental-features = ["nix-command" "flakes"];
@@ -10,6 +10,16 @@ _: {
       options = "--delete-older-than 14d";
     };
   };
+
+  # Activation de nh (Nix Helper) avec nvd intégré
+  programs.nh = {
+    enable = true;
+    flake = "/home/yannis/Documents/gitlab/ymalgorn/dotfiles/nixos-laptop";
+  };
+
+  environment.systemPackages = with pkgs; [
+    nvd
+  ];
 
   nixpkgs.config = {
     allowUnfree = true;

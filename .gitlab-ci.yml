@@ -2,6 +2,7 @@ stages:
   - security
   - lint
   - check
+  - monitor
 
 default:
   interruptible: true
@@ -43,3 +44,28 @@ nix-eval:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
+
+# D. Monitoring proactif des mises à jour système (planifié / déclenchement manuel)
+monitor-updates:
+  stage: monitor
+  image: nixos/nix:latest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
+  script:
+    - 'echo "=== 1. Construction du systeme actuel (lockfile) ==="'
+    - 'CURRENT_SYSTEM=$(nix --extra-experimental-features "nix-command flakes" build .#nixosConfigurations.dellYannis.config.system.build.toplevel --print-out-paths --no-link)'
+    - 'echo "Systeme actuel: $CURRENT_SYSTEM"'
+    - 'echo "=== 2. Verification des mises a jour des inputs Flake ==="'
+    - 'nix --extra-experimental-features "nix-command flakes" flake update --commit-lock-file=false'
+    - 'echo "=== 3. Construction du systeme avec les inputs mis a jour ==="'
+    - 'UPDATED_SYSTEM=$(nix --extra-experimental-features "nix-command flakes" build .#nixosConfigurations.dellYannis.config.system.build.toplevel --print-out-paths --no-link)'
+    - 'echo "Systeme mis a jour: $UPDATED_SYSTEM"'
+    - 'echo "=== 4. Rapport de diff des versions (nvd) ==="'
+    - 'nix --extra-experimental-features "nix-command flakes" run nixpkgs#nvd -- diff "$CURRENT_SYSTEM" "$UPDATED_SYSTEM" | tee nvd-update-report.txt'
+  artifacts:
+    name: "nvd-update-report-$CI_COMMIT_SHORT_SHA"
+    when: always
+    paths:
+      - nvd-update-report.txt
+    expire_in: 30 days
