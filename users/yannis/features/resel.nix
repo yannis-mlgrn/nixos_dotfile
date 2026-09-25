@@ -7,6 +7,7 @@
     pkgs.tio
     inputs.raktools.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgs.vagrant
+    pkgs.gitlab-ci-local
   ];
 
   xdg.configFile."tio/config".text = ''
@@ -39,5 +40,6 @@
   home.shellAliases = {
     cisco = "tio cisco";
     mikrotik = "tio mikrotik";
+    gitlab-local-ci = "gitlab-ci-local";
   };
 }
