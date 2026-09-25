@@ -13,7 +13,7 @@ nixos-config/
 ├── flake.nix                                 # Point d'entrée Flake (inputs dédupliqués, formatter, devShell)
 ├── flake.lock                                # Verrouillage reproductible des dépendances
 ├── statix.toml                               # Configuration du linter Statix
-├── .gitlab-ci.yml                            # Pipeline CI/CD (nix flake check & statix)
+├── .gitlab-ci.yml                            # Pipeline CI/CD DevSecOps (Gitleaks, Alejandra, Statix, Deadnix, eval)
 ├── hosts/
 │   └── dellYannis/
 │       ├── default.nix                       # Configuration de la machine (assemblage des modules)
@@ -36,12 +36,13 @@ nixos-config/
 │   │   └── sound.nix                         # PipeWire (ALSA, PulseAudio, JACK) et rtkit
 │   └── virtualisation/
 │       ├── docker.nix                        # Démon et virtualisation Docker
-│       └── libvirt.nix                       # Libvirt, Vagrant et dconf
+│       ├── libvirt.nix                       # Libvirt, Vagrant et dconf
+│       └── virtualbox.nix                    # VirtualBox et packs d'extension
 ├── users/
 │   └── yannis/
 │       ├── default.nix                       # Déclaration de l'utilisateur NixOS, groupes (dialout) et shell Zsh
 │       ├── home.nix                          # Point d'entrée Home Manager modulaire (assemblage des features)
-│       └── features/                         # Modules atomiques par domaine (cli, desktop, dev, git, resel, internship)
+│       └── features/                         # Modules atomiques (cli, desktop, dev, git, imt-atlantique, resel, internship)
 ├── secrets/
 │   ├── secrets.nix                           # Registre des clés publiques autorisées
 │   └── *.age                                 # Secrets chiffrés via age / agenix
@@ -70,9 +71,9 @@ sudo nixos-rebuild test --flake .
 
 ### 2. Vérification et Qualité de Code
 
-* **Évaluation complète du Flake** (hôtes, devShells, modules) :
+* **Formater l'ensemble du dépôt** (Alejandra) :
   ```bash
-  nix flake check
+  nix fmt
   ```
 
 * **Linter de code Nix** (Statix) :
@@ -80,9 +81,25 @@ sudo nixos-rebuild test --flake .
   nix run nixpkgs#statix -- check
   ```
 
-* **Formater l'ensemble du dépôt** (Alejandra) :
+* **Détection de code mort** (Deadnix) :
   ```bash
-  nix fmt
+  nix run nixpkgs#deadnix -- --fail .
+  ```
+
+* **Détection de fuites de secrets** (Gitleaks) :
+  ```bash
+  nix run nixpkgs#gitleaks -- detect --verbose --redact
+  ```
+
+* **Évaluation complète du Flake** (hôtes, devShells, modules) :
+  ```bash
+  nix flake check
+  ```
+
+* **Tester le pipeline CI en local** (gitlab-ci-local) :
+  ```bash
+  gitlab-local-ci
+  # ou cibler un job : gitlab-local-ci secret-detection
   ```
 
 ### 3. Environnement de Développement (DevShell)
@@ -113,7 +130,10 @@ nix run github:ryantm/agenix -- -r
 
 * **Optimisation du Nix Store** : Le store déduplique automatiquement les fichiers identiques via des liens durs (`auto-optimise-store = true`).
 * **Garbage Collection** : Nettoyage automatique hebdomadaire des générations de plus de 14 jours.
-* **Intégration Continue (CI)** : Chaque push sur `main` ou merge request exécute `nix flake check` et `statix check` dans GitLab CI.
+* **Pipeline CI/CD DevSecOps** : Chaque push sur `main` ou merge request exécute :
+  * La recherche de fuites de secrets (**Gitleaks**).
+  * Le respect du style et l'analyse statique (**Alejandra**, **Statix**, **Deadnix**).
+  * La vérification et l'évaluation rapide de la dérivation système (**nix flake check** & **nix eval**).
 
 ---
 
