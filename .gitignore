@@ -19,3 +19,4 @@ secret_out.txt
 *.swp
 *~
 .antigravitycli/
+.gitlab-ci-local/

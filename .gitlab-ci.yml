@@ -1,12 +1,45 @@
 stages:
+  - security
+  - lint
   - check
 
-nix-check:
+default:
+  interruptible: true
+
+# A. Détection des secrets (anti-leak)
+secret-detection:
+  stage: security
+  image:
+    name: zricethezav/gitleaks:latest
+    entrypoint: [""]
+  script:
+    - gitleaks detect --verbose --redact
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
+
+# B. Linter et formatage de code (Alejandra, Statix, Deadnix)
+nix-lint:
+  stage: lint
+  image: nixos/nix:latest
+  script:
+    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#alejandra -- --check .
+    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#statix -- check
+    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#deadnix -- --fail .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
+
+# C. Validation de l'évaluation système et flake check
+nix-eval:
   stage: check
   image: nixos/nix:latest
   script:
     - nix --extra-experimental-features "nix-command flakes" flake check
-    - nix --extra-experimental-features "nix-command flakes" run nixpkgs#statix -- check
-  only:
-    - main
-    - merge_requests
+    - nix --extra-experimental-features "nix-command flakes" eval .#nixosConfigurations.dellYannis.config.system.build.toplevel.drvPath
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
