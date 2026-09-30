@@ -56,7 +56,7 @@
     xclip
     arandr
     autorandr
-    terminator
+    kitty
     kdePackages.dolphin
   ];
 

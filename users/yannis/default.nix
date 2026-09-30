@@ -36,6 +36,11 @@
         source /run/agenix/gitlab-token
         set +a
       fi
+
+      # Afficher fastfetch au lancement interactif des terminaux
+      if [[ -o interactive ]] && [[ "$TERM" != "dumb" ]]; then
+        fastfetch
+      fi
     '';
   };
 }

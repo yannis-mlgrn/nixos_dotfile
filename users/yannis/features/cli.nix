@@ -4,11 +4,12 @@
   ...
 }: {
   home.packages = with pkgs; [
-    terminator
+    kitty
     bluetui
     ripgrep
     unzip
     tailscale
+    fastfetch
 
     # Antigravity CLI via Flake input
     inputs.antigravity-nix.packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-cli
@@ -19,5 +20,6 @@
 
   home.shellAliases = {
     agi = "agy";
+    neofetch = "fastfetch";
   };
 }
