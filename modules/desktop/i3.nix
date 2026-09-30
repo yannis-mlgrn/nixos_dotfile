@@ -17,13 +17,15 @@
         xrandr
         arandr
         autorandr
+        (python3.withPackages (ps: with ps; [i3ipc]))
       ];
     };
   };
 
-  # Gestion automatique des écrans et du hotplug (branchement / débranchement)
+  # Désactiver le service d'arrière-plan autorandr (évite les boucles infinies de re-détection X11/DRM avec Nvidia)
+  # L'outil autorandr reste disponible en CLI et via les raccourcis F8/F9
   services.autorandr = {
-    enable = true;
+    enable = false;
   };
 
   # Définir la session par défaut pour SDDM
@@ -58,6 +60,7 @@
     autorandr
     kitty
     kdePackages.dolphin
+    (python3.withPackages (ps: with ps; [i3ipc]))
   ];
 
   # Autoriser la modification de la luminosité sans sudo
