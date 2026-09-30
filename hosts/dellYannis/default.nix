@@ -23,7 +23,8 @@
 
     # Modules environnement de bureau
     ../../modules/desktop/sddm.nix
-    ../../modules/desktop/hyprland.nix
+    ../../modules/desktop/i3.nix
+    # ../../modules/desktop/hyprland.nix
 
     # Modules virtualisation
     ../../modules/virtualisation/docker.nix
