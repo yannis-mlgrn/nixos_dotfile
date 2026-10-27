@@ -13,9 +13,6 @@
     obsidian
     vlc
     iptvnator
-
-    # Compagnon de monitoring des agents IA (Claude Code, Codex, ...)
-    (pkgs.callPackage ../../../pkgs/coucou.nix {})
   ];
 
   # Thème sombre global (GTK, Qt et préférence freedesktop lue via le portail)
