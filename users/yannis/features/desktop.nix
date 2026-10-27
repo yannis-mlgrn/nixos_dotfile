@@ -9,8 +9,35 @@
     telegram-desktop
     antigravity-ide
     discord
+    signal-desktop
     obsidian
+    vlc
+    iptvnator
+
+    # Compagnon de monitoring des agents IA (Claude Code, Codex, ...)
+    (pkgs.callPackage ../../../pkgs/coucou.nix {})
   ];
+
+  # Thème sombre global (GTK, Qt et préférence freedesktop lue via le portail)
+  gtk = {
+    enable = true;
+    colorScheme = "dark";
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+  };
+
+  dconf.settings."org/gnome/desktop/interface" = {
+    color-scheme = "prefer-dark";
+    gtk-theme = "Adwaita-dark";
+  };
+
+  qt = {
+    enable = true;
+    platformTheme.name = "gtk3";
+    style.name = "adwaita-dark";
+  };
 
   home.sessionVariables = {
     VISUAL = "codium --wait";

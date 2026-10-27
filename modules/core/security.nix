@@ -31,5 +31,9 @@
   security = {
     rtkit.enable = true;
     pam.services.hyprlock = {};
+    # Déverrouillage automatique du Secret Service au login (requis par Coucou pour les clés API)
+    pam.services.sddm.enableGnomeKeyring = true;
   };
+
+  services.gnome.gnome-keyring.enable = true;
 }

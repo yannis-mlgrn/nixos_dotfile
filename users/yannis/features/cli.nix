@@ -6,6 +6,7 @@
   home.packages = with pkgs; [
     kitty
     bluetui
+    htop
     ripgrep
     unzip
     tailscale

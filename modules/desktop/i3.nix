@@ -28,6 +28,11 @@
     enable = false;
   };
 
+  # Forcer l'écran interne à 60 Hz (120 Hz par défaut) au démarrage de la session
+  services.xserver.displayManager.sessionCommands = ''
+    ${pkgs.xrandr}/bin/xrandr --output eDP --mode 1920x1080 --rate 60.01
+  '';
+
   # Définir la session par défaut pour SDDM
   services.displayManager.defaultSession = "none+i3";
 
@@ -56,12 +61,21 @@
     pavucontrol
     networkmanagerapplet
     xclip
+    xrandr
     arandr
     autorandr
     kitty
     kdePackages.dolphin
     (python3.withPackages (ps: with ps; [i3ipc]))
   ];
+
+  # Portail XDG : expose la préférence de thème sombre aux applis (Firefox, Electron, kitty...)
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    config.common.default = "gtk";
+  };
+  programs.dconf.enable = true;
 
   # Autoriser la modification de la luminosité sans sudo
   services.udev.packages = [pkgs.brightnessctl];

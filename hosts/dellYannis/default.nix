@@ -48,6 +48,7 @@
   environment.systemPackages = with pkgs; [
     wget
     vim
+    htop
     inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 

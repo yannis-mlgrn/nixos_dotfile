@@ -6,9 +6,15 @@
     gnumake
     pkg-config
     openssl
+    terminator
 
     # Rust
-    rustup
+    cargo
+    rustc
+    rust-analyzer
+
+    # Node.js
+    nodejs
 
     # Docker
     docker-compose

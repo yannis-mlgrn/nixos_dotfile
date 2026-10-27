@@ -6,6 +6,7 @@
     ./features/desktop.nix
     ./features/dev.nix
     ./features/git.nix
+    ./features/ia.nix
     ./features/imt-atlantique.nix
     ./features/resel.nix
     # ./features/internship.nix
