@@ -48,7 +48,8 @@ nixos-config/
 │   └── *.age                                 # Secrets chiffrés via age / agenix
 └── utils/
     ├── gitlab-sync.nix                       # Service et script CLI sync-gitlab-repos
-    └── nextcloud-sync.nix                    # Service et script CLI sync-nextcloud (~/drive)
+    ├── nextcloud-sync.nix                    # Service et script CLI sync-nextcloud (~/drive)
+    └── pentest-kb.nix                        # Base de connaissance pentest (flake dotfiles/pentest-kb, MCP OpenKnowledge)
 ```
 
 ---

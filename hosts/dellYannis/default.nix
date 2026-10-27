@@ -34,6 +34,7 @@
     # Utilitaires & Services
     ../../utils/gitlab-sync.nix
     ../../utils/nextcloud-sync.nix
+    ../../utils/pentest-kb.nix
   ];
 
   networking.hostName = "dellYannis";

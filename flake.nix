@@ -34,6 +34,13 @@
       url = "github:Zeus-Deus/gazelle-tui";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Base de connaissance pentest (paquet `ok`, `kb-update`, module NixOS).
+    # Ses sources (HackTricks…) sont des inputs à elle, jamais téléchargées par ce système.
+    pentest-kb = {
+      url = "git+https://git.resel.fr/ymalgorn1/dotfiles/pentest-kb.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
