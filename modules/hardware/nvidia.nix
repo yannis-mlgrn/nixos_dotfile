@@ -15,6 +15,8 @@
     powerManagement.finegrained = false;
     open = false;
     nvidiaSettings = true;
+    # nvidia-powerd : transfère la marge de puissance du CPU vers le GPU en charge (RTX 30+ laptop)
+    dynamicBoost.enable = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
 
     prime = {

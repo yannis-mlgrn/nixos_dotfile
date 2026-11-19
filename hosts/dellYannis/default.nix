@@ -24,6 +24,7 @@
     # Modules environnement de bureau
     ../../modules/desktop/sddm.nix
     ../../modules/desktop/i3.nix
+    ../../modules/desktop/gaming.nix
     # ../../modules/desktop/hyprland.nix
 
     # Modules virtualisation
@@ -34,7 +35,6 @@
     # Utilitaires & Services
     ../../utils/gitlab-sync.nix
     ../../utils/nextcloud-sync.nix
-    ../../utils/pentest-kb.nix
   ];
 
   networking.hostName = "dellYannis";

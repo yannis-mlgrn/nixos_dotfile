@@ -8,13 +8,17 @@
     openssl
     terminator
 
+    #homelab
+    k9s
+    kubectl
+
     # Rust
     cargo
     rustc
     rust-analyzer
 
     # Node.js
-    nodejs
+    nodejs_26
 
     # Docker
     docker-compose

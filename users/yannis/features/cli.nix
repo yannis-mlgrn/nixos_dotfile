@@ -22,5 +22,7 @@
   home.shellAliases = {
     agi = "agy";
     neofetch = "fastfetch";
+    perf-on = "powerprofilesctl set performance";
+    perf-off = "powerprofilesctl set balanced";
   };
 }
